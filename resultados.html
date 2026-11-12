@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Resultados · Validación de rutina</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#FDF7B8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#141412" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23111'/%3E%3Cpath d='M8 24V14M16 24V8M24 24V18' stroke='%23FDF7B8' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body class="resultados">
+  <main class="app">
+    <header class="cinta">
+      <span class="cinta__marca">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v18M18 3v18M6 7h12M6 13h12M6 19h12" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg>
+        Rutina de cierre · Análisis
+      </span>
+      <a href="index.html">Ver cuestionario</a>
+    </header>
+
+    <h1 tabindex="-1">Resultados</h1>
+    <p class="lead" id="fuente" aria-live="polite">Cargando…</p>
+
+    <div class="banda banda--demo" id="banda-demo" hidden>
+      <h2>Modo demo · datos ficticios</h2>
+      <p>Estás viendo 5 respuestas inventadas para revisar el análisis. No las uses en tu reporte. Desactívalo en <code>js/config.js</code> (<code>DEMO_PERMITIDO: false</code>) antes del trabajo de campo.</p>
+    </div>
+
+    <div class="banda banda--alerta" id="banda-pocas" role="note" hidden></div>
+    <div class="error" id="error-resultados" role="alert"></div>
+
+    <div class="controles">
+      <button type="button" class="btn btn--primario btn--chico" id="btn-actualizar">Actualizar</button>
+      <label class="btn btn--chico" for="archivo-respaldo" tabindex="0" id="lbl-respaldo">Cargar respaldos JSON</label>
+      <input type="file" id="archivo-respaldo" accept=".json,application/json" multiple class="sr-only">
+      <button type="button" class="btn btn--chico" id="csv-pasos">CSV · resumen por paso</button>
+      <button type="button" class="btn btn--chico" id="csv-modulos">CSV · módulos</button>
+      <button type="button" class="btn btn--chico" id="csv-respuestas">CSV · respuestas completas</button>
+    </div>
+
+    <div id="contenido" hidden>
+      <section class="seccion" aria-labelledby="t-resumen">
+        <h2 id="t-resumen">Resumen</h2>
+        <div class="kpis" id="kpis"></div>
+      </section>
+
+      <section class="seccion" aria-labelledby="t-pasos">
+        <h2 id="t-pasos">Validación de los 14 pasos</h2>
+        <p class="ayuda">“Hace” = siempre + a veces, entre quienes respondieron ese paso. Lugar promedio = posición media entre quienes lo ordenaron (cada quien ordena una cantidad distinta de pasos, por eso también se da la posición relativa: 0 % = al inicio de la noche, 100 % = al final).</p>
+        <div class="leyenda" id="leyenda-semaforo"></div>
+        <div class="leyenda" aria-hidden="true">
+          <span><i class="muestra b-siempre"></i> Siempre</span>
+          <span><i class="muestra b-aveces"></i> A veces</span>
+          <span><i class="muestra b-nunca"></i> Nunca</span>
+        </div>
+        <div class="filas-pasos" id="filas-pasos"></div>
+      </section>
+
+      <section class="seccion" aria-labelledby="t-orden">
+        <h2 id="t-orden">Orden propuesto vs. blueprint</h2>
+        <p class="ayuda">Los pasos se ordenan por su posición relativa promedio. “Cambio” compara contra el lugar que ese paso tendría en el blueprint (solo entre los pasos que alguien ordenó).</p>
+        <p id="coincidencia"></p>
+        <div class="tabla-envoltura"><table id="tabla-orden"></table></div>
+      </section>
+
+      <section class="seccion" aria-labelledby="t-modulos">
+        <h2 id="t-modulos">Ranking de módulos</h2>
+        <p class="ayuda">“¿Lo pondrías en tu cuarto?” solo se pregunta a quien eligió el módulo.</p>
+        <div class="tabla-envoltura"><table id="tabla-modulos"></table></div>
+        <p id="intencion" style="margin-top:14px"></p>
+      </section>
+
+      <section class="seccion" aria-labelledby="t-segmentos">
+        <h2 id="t-segmentos">Segmentación</h2>
+        <label class="etiqueta" for="segmento">Comparar por</label>
+        <select class="select" id="segmento">
+          <option value="ocupacion">Ocupación</option>
+          <option value="espacio">Espacio disponible</option>
+          <option value="renta">Renta o se muda seguido</option>
+        </select>
+        <p class="ayuda">Porcentaje dentro de cada grupo. Con grupos de 1 o 2 personas, cualquier diferencia es solo una pista.</p>
+        <div class="tabla-envoltura"><table id="tabla-segmentos"></table></div>
+      </section>
+
+      <section class="seccion" aria-labelledby="t-voces">
+        <h2 id="t-voces">Lo que dijeron</h2>
+        <div class="voces" id="voces"></div>
+      </section>
+
+      <section class="seccion" aria-labelledby="t-calidad">
+        <h2 id="t-calidad">Calidad de los datos</h2>
+        <div id="calidad"></div>
+      </section>
+    </div>
+
+    <p class="pie">Esta página no guarda nada: solo lee la hoja de respuestas.</p>
+  </main>
+
+  <script src="js/data.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/fila.js"></script>
+  <script src="js/resultados.js"></script>
+</body>
+</html>

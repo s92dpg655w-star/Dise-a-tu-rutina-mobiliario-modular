@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Tu noche, paso a paso · Validación de rutina</title>
+  <meta name="description" content="Cuestionario anónimo de 5 minutos sobre tu rutina de cierre de día. Proyecto universitario de Diseño de Servicios.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#FDF7B8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#141412" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23FDF7B8'/%3E%3Cpath d='M9 5v24M23 5v24M9 9h14M9 17h14M9 25h14' stroke='%23111' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <main class="app" id="app">
+    <header class="cinta">
+      <span class="cinta__marca">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v18M18 3v18M6 7h12M6 13h12M6 19h12" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg>
+        Rutina de cierre
+      </span>
+      <ol class="etapas" id="etapas" aria-hidden="true">
+        <li></li><li></li><li></li><li></li><li></li><li></li><li></li>
+      </ol>
+    </header>
+
+    <div id="anuncio" class="sr-only" aria-live="polite"></div>
+
+    <!-- 1. BIENVENIDA -->
+    <section class="pantalla" data-pantalla="bienvenida" aria-labelledby="t-bienvenida">
+      <svg class="bienvenida__dibujo" viewBox="0 0 200 150" aria-hidden="true">
+        <circle cx="160" cy="30" r="16" fill="none" stroke="currentColor" stroke-width="4"/>
+        <circle cx="168" cy="24" r="14" fill="var(--fondo)"/>
+        <g stroke="currentColor" stroke-width="7" stroke-linecap="round" fill="none">
+          <path d="M50 30v105M130 30v105M50 30h80M50 65h80M50 100h80M50 135h80M40 135h20M120 135h20"/>
+        </g>
+        <g fill="currentColor"><circle cx="50" cy="30" r="6"/><circle cx="130" cy="30" r="6"/><circle cx="50" cy="65" r="6"/><circle cx="130" cy="65" r="6"/><circle cx="50" cy="100" r="6"/><circle cx="130" cy="100" r="6"/></g>
+        <rect x="70" y="80" width="22" height="16" rx="3" fill="currentColor"/>
+        <rect x="98" y="42" width="18" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="3"/>
+      </svg>
+      <span class="antetitulo" data-t="proyecto.curso"></span>
+      <h1 id="t-bienvenida" tabindex="-1" data-t="bienvenida.titulo"></h1>
+      <ol class="bienvenida__lista" id="bienvenida-lineas"></ol>
+      <div class="error" id="error-bienvenida" role="alert"></div>
+      <div class="campo" id="campo-consentimiento">
+        <label class="opcion consentimiento">
+          <input type="checkbox" id="consentimiento">
+          <span data-t="bienvenida.consentimiento"></span>
+        </label>
+      </div>
+      <button type="button" class="btn btn--primario btn--ancho" id="btn-empezar" data-t="bienvenida.boton"></button>
+      <div class="tarjeta" id="aviso-pendientes" hidden style="margin-top:22px">
+        <p id="aviso-pendientes-texto"></p>
+        <button type="button" class="btn btn--chico" id="btn-descargar-pendientes">Descargar respuestas guardadas</button>
+      </div>
+      <p class="pie">Sin cookies, sin analíticas y sin datos personales.</p>
+    </section>
+
+    <!-- 2. PERFIL -->
+    <section class="pantalla" data-pantalla="perfil" aria-labelledby="t-perfil" hidden>
+      <span class="antetitulo">Parte 1 de 5</span>
+      <h1 id="t-perfil" tabindex="-1" data-t="perfil.titulo"></h1>
+      <div class="error" id="error-perfil" role="alert"></div>
+
+      <div class="campo" id="campo-edad">
+        <label class="etiqueta" for="edad" data-t="perfil.preguntaEdad"></label>
+        <input class="entrada entrada--edad" id="edad" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" aria-describedby="ayuda-edad">
+        <p class="ayuda" id="ayuda-edad" style="margin-top:8px">Solo el número, en años.</p>
+      </div>
+
+      <fieldset class="campo" id="campo-ocupacion">
+        <legend data-t="perfil.preguntaOcupacion"></legend>
+        <div class="opciones" id="op-ocupacion"></div>
+      </fieldset>
+
+      <fieldset class="campo" id="campo-espacio">
+        <legend data-t="perfil.preguntaEspacio"></legend>
+        <div class="opciones" id="op-espacio"></div>
+      </fieldset>
+
+      <fieldset class="campo" id="campo-renta">
+        <legend data-t="perfil.preguntaRenta"></legend>
+        <div class="opciones" id="op-renta"></div>
+      </fieldset>
+    </section>
+
+    <!-- 3. VALIDAR PASOS -->
+    <section class="pantalla" data-pantalla="pasos" aria-labelledby="t-pasos" hidden>
+      <span class="antetitulo">Parte 2 de 5</span>
+      <h1 id="t-pasos" tabindex="-1" data-t="validarPasos.titulo"></h1>
+      <p class="lead" data-t="validarPasos.instruccion"></p>
+
+      <div class="progreso" id="progreso" role="progressbar" aria-label="Pasos respondidos" aria-valuemin="0" aria-valuemax="14" aria-valuenow="0">
+        <div class="progreso__relleno" id="progreso-relleno"></div>
+      </div>
+      <p class="progreso__texto" id="progreso-texto"></p>
+
+      <div class="error" id="error-pasos" role="alert"></div>
+
+      <div class="tarjeta tarjeta-paso" id="tarjeta-paso">
+        <div class="tarjeta-paso__num" id="paso-num" aria-hidden="true"></div>
+        <p class="tarjeta-paso__texto" id="paso-texto" tabindex="-1"></p>
+        <p class="tarjeta-paso__pregunta" id="paso-pregunta">¿Con qué frecuencia lo haces?</p>
+        <div class="frecuencias" id="frecuencias" role="group" aria-labelledby="paso-texto paso-pregunta"></div>
+      </div>
+
+      <h2 class="sr-only" id="t-mapa">Ir a un paso</h2>
+      <ol class="mapa-pasos" id="mapa-pasos" aria-labelledby="t-mapa"></ol>
+      <p class="mapa-leyenda">Toca un número para regresar y corregir.</p>
+    </section>
+
+    <!-- 4. ORDENAR -->
+    <section class="pantalla" data-pantalla="ordenar" aria-labelledby="t-ordenar" hidden>
+      <span class="antetitulo">Parte 3 de 5</span>
+      <h1 id="t-ordenar" tabindex="-1" data-t="ordenar.titulo"></h1>
+      <p class="lead" id="ayuda-orden" data-t="ordenar.instruccion"></p>
+      <div class="error" id="error-ordenar" role="alert"></div>
+
+      <ol class="lista-orden" id="lista-orden" aria-labelledby="t-ordenar" aria-describedby="ayuda-orden"></ol>
+      <p class="lista-vacia" id="lista-vacia" data-t="ordenar.vacio" hidden></p>
+
+      <div class="campo">
+        <label class="etiqueta" for="propio-texto" data-t="ordenar.preguntaPropios"></label>
+        <div class="agregar">
+          <input class="entrada" id="propio-texto" type="text" maxlength="80" autocomplete="off" data-ph="ordenar.ejemploPropio">
+          <button type="button" class="btn btn--primario" id="btn-agregar">Agregar</button>
+        </div>
+      </div>
+
+      <div class="campo">
+        <label class="etiqueta" for="simultaneos" data-t="ordenar.preguntaSimultaneos"></label>
+        <textarea class="area" id="simultaneos" maxlength="500" data-ph="ordenar.ejemploSimultaneos"></textarea>
+      </div>
+    </section>
+
+    <!-- 5. IMPREVISTOS -->
+    <section class="pantalla" data-pantalla="imprevistos" aria-labelledby="t-imprevistos" hidden>
+      <span class="antetitulo">Parte 4 de 5</span>
+      <h1 id="t-imprevistos" tabindex="-1" data-t="imprevistos.titulo"></h1>
+      <div class="campo">
+        <label class="etiqueta" for="imprevistos" data-t="imprevistos.pregunta"></label>
+        <textarea class="area" id="imprevistos" maxlength="500" data-ph="imprevistos.ejemplo"></textarea>
+      </div>
+    </section>
+
+    <!-- 6. ARMA TU MUEBLE -->
+    <section class="pantalla" data-pantalla="mueble" aria-labelledby="t-mueble" hidden>
+      <span class="antetitulo">Parte 5 de 5</span>
+      <h1 id="t-mueble" tabindex="-1" data-t="mueble.titulo"></h1>
+      <p class="lead" data-t="mueble.instruccion"></p>
+
+      <div class="mueble-panel">
+        <div class="mueble-panel__fila">
+          <div class="mueble-svg" id="mueble-svg"></div>
+          <div class="mueble-datos" aria-live="polite">
+            <div class="dato-grande" id="dato-cobertura"></div>
+            <div id="dato-tus"></div>
+            <div id="dato-medidas"></div>
+            <div class="aviso-espacio" id="aviso-espacio" hidden></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="error" id="error-mueble" role="alert"></div>
+
+      <h2>Módulos</h2>
+      <div class="modulos" id="modulos"></div>
+
+      <div class="preguntas-modulo" id="preguntas-modulo"></div>
+
+      <div class="campo">
+        <label class="etiqueta" for="cambios" data-t="mueble.preguntaCambios"></label>
+        <textarea class="area" id="cambios" maxlength="1000" data-ph="mueble.ejemploCambios"></textarea>
+      </div>
+
+      <fieldset class="campo" id="campo-intencion">
+        <legend data-t="mueble.preguntaIntencion"></legend>
+        <div class="opciones" id="op-intencion"></div>
+      </fieldset>
+    </section>
+
+    <!-- 7. GRACIAS -->
+    <section class="pantalla" data-pantalla="gracias" aria-labelledby="t-gracias" hidden>
+      <h1 id="t-gracias" tabindex="-1" data-t="gracias.titulo"></h1>
+
+      <div class="tarjeta estado-envio" id="estado-envio" role="status"></div>
+
+      <p data-t="gracias.texto"></p>
+      <div class="tarjeta resumen" id="resumen">
+        <div>
+          <h2>Mi noche</h2>
+          <ol id="resumen-rutina"></ol>
+        </div>
+        <div>
+          <h2>Mi mueble</h2>
+          <div class="mueble-svg" id="resumen-mueble"></div>
+          <p id="resumen-mueble-datos" style="text-align:center;margin:8px 0 0"></p>
+        </div>
+      </div>
+
+      <div class="acciones">
+        <button type="button" class="btn btn--primario btn--ancho" id="btn-png">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0l-5-5m5 5l5-5M5 20h14" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Descargar imagen (PNG)
+        </button>
+        <button type="button" class="enlace-btn" id="btn-otra-persona">Responder de nuevo (otra persona en este dispositivo)</button>
+      </div>
+      <p class="pie">Puedes cerrar esta página.</p>
+    </section>
+  </main>
+
+  <nav class="barra" id="barra" aria-label="Navegación del cuestionario" hidden>
+    <div class="barra__in">
+      <button type="button" class="btn btn-atras" id="btn-atras">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Atrás
+      </button>
+      <button type="button" class="btn btn--primario" id="btn-siguiente">Siguiente</button>
+    </div>
+  </nav>
+
+  <noscript><p style="padding:20px">Esta encuesta necesita JavaScript activado.</p></noscript>
+
+  <script src="js/data.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/fila.js"></script>
+  <script src="js/mueble.js"></script>
+  <script src="js/ordenar.js"></script>
+  <script src="js/envio.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
